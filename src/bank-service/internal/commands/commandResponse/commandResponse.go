@@ -1,11 +1,14 @@
 package commandResponse
 
-import "bankService/internal/models"
-
 type WalletResponse struct {
-	Result []models.Wallet `form:"result,omitempty" json:"result,omitempty"`
+	Result WalletItem `json:"result,omitempty"`
+}
+
+type WalletItem struct {
+	Id       *string `json:"id,required"`
+	Ballance *int64  `json:"ballance,required"`
 }
 
 type ErrorReponse struct {
-	Error string `form:"error,omitempty" json:"error,omitempty"`
+	Error string `json:"error,required"`
 }

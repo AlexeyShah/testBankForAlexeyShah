@@ -1,0 +1,84 @@
+basePath: /api/v1
+definitions:
+  bankService_internal_commands_commandRequest.WalletCreateRequest:
+    properties:
+      amount:
+        type: integer
+      id:
+        type: string
+      operation:
+        type: string
+    type: object
+  bankService_internal_commands_commandResponse.ErrorReponse:
+    properties:
+      error:
+        type: string
+    type: object
+  bankService_internal_commands_commandResponse.WalletResponse:
+    properties:
+      result:
+        items:
+          $ref: '#/definitions/bankService_internal_models.Wallet'
+        type: array
+    type: object
+  bankService_internal_models.Wallet:
+    properties:
+      ballance:
+        type: integer
+      id:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: bank rest application
+  title: Api Bank Service
+  version: "1.0"
+paths:
+  /wallet:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: WalletCreateRequest
+        in: body
+        name: WalletCreateRequest
+        schema:
+          $ref: '#/definitions/bankService_internal_commands_commandRequest.WalletCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/bankService_internal_commands_commandResponse.ErrorReponse'
+      summary: create
+      tags:
+      - Wallet
+  /wallets/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/bankService_internal_commands_commandResponse.WalletResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/bankService_internal_commands_commandResponse.ErrorReponse'
+      summary: get
+      tags:
+      - Wallet
+swagger: "2.0"

@@ -6,6 +6,8 @@ COPY go.sum ./
 RUN go mod download
 
 COPY . .
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+RUN $GOPATH/bin/swag init -g ./cmd/server/main.go -o docs --parseDependency
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/bank-service ./cmd/server
 
 FROM alpine:latest

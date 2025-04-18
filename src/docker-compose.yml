@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  bank-service:
+    build:
+      context: ./bank-service
+    environment:
+      - Environment=Production
+      - POSTGRE_CONNECTION_STRING=host=postgres user=pgUser password=pgPass!!1234 dbname=bankdb port=5432 sslmode=disable TimeZone=UTC
+      - HOST=0.0.0.0
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: pgUser
+      POSTGRES_PASSWORD: pgPass!!1234
+      POSTGRES_DB: bankdb
+      PGDATA: /data/postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/data/postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres_user -d postgres_db" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local

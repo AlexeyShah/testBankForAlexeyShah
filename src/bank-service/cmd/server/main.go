@@ -5,6 +5,7 @@ import (
 	"bankService/internal/handler"
 	"bankService/internal/helpers/consts"
 	"bankService/internal/logger"
+	"bankService/internal/storage"
 	"os"
 	"os/signal"
 	"syscall"
@@ -27,6 +28,11 @@ func init() {
 // @BasePath /api/v1
 func main() {
 	logger.Logger.Info("Start application")
+
+	err := storage.NewMigrator().Magrate()
+	if err != nil {
+		panic(err)
+	}
 
 	if os.Getenv(consts.EnvironmentName) == consts.EnvironmentProduction {
 		gin.SetMode(gin.ReleaseMode)

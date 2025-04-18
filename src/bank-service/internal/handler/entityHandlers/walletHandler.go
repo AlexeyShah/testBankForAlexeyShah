@@ -20,7 +20,7 @@ func NewWalletHandler() *WalletHandler {
 // @Tags Wallet
 // @Accept  json
 // @Produce  json
-// @Param WalletCreateRequest body commandsRequest.WalletCreateRequest false "WalletCreateRequest"
+// @Param WalletCreateRequest body commandRequest.WalletCreateRequest false "WalletCreateRequest"
 // @Success 201 {object} nil
 // @Failure 400 {object} commandResponse.ErrorReponse "Bad Request"
 // @Router /wallet [post]
@@ -31,6 +31,7 @@ func (*WalletHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, &commandResponse.ErrorReponse{
 			Error: err.Error(),
 		})
+		return
 	}
 
 	err = services.NewWalletService(c, true).Create(req)
@@ -38,6 +39,7 @@ func (*WalletHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, &commandResponse.ErrorReponse{
 			Error: err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusCreated, nil)
@@ -58,7 +60,8 @@ func (*WalletHandler) Get(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, &commandResponse.ErrorReponse{
 			Error: err.Error(),
 		})
+		return
 	}
 
-	c.JSON(http.StatusBadRequest, res)
+	c.JSON(http.StatusOK, res)
 }
