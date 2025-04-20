@@ -28,27 +28,27 @@ func NewWalletService(c *gin.Context, autoCloseStore bool) *WalletService {
 
 	return &WalletService{
 		BaseService: BaseService{
-			autoCloseStore: autoCloseStore,
-			ctx:            ctx,
-			db:             db,
+			AutoCloseStore: autoCloseStore,
+			Ctx:            ctx,
+			DB:             db,
 		},
 	}
 }
 
 func (s *WalletService) Create(req commandRequest.WalletCreateRequest) error {
-	if s.autoCloseStore {
+	if s.AutoCloseStore {
 		defer s.Close()
 	}
 	var err error
 	defer s.setRollBack(&err)
 
-	err = validators.NewWalletValidators(s.db.GetTx()).ValidateCreate(req)
+	err = validators.NewWalletValidators(s.DB.GetTx()).ValidateCreate(req)
 	if err != nil {
 		return err
 	}
 
 	mutex.Lock()
-	err = s.db.GetTx().Exec("CALL ballanseUpdate(?, ?, ?)", req.Id, req.Amount, req.Operation).Error
+	err = s.DB.GetTx().Exec("CALL ballanseUpdate(?, ?, ?)", req.Id, req.Amount, req.Operation).Error
 	mutex.Unlock()
 	if err != nil {
 		return err
@@ -58,19 +58,19 @@ func (s *WalletService) Create(req commandRequest.WalletCreateRequest) error {
 }
 
 func (s *WalletService) Get(id *string) (*commandResponse.WalletResponse, error) {
-	if s.autoCloseStore {
+	if s.AutoCloseStore {
 		defer s.Close()
 	}
 	var err error
 	defer s.setRollBack(&err)
 
-	err = validators.NewWalletValidators(s.db.GetTx()).ValidateGet(id)
+	err = validators.NewWalletValidators(s.DB.GetTx()).ValidateGet(id)
 	if err != nil {
 		return nil, err
 	}
 
 	var entity models.Wallet
-	err = s.db.GetTx().Raw("SELECT * FROM wallets w WHERE Id = ? limit 1", id).Scan(&entity).Error
+	err = s.DB.GetTx().Raw("SELECT * FROM wallets w WHERE Id = ? limit 1", id).Scan(&entity).Error
 	if err != nil {
 		return nil, err
 	}

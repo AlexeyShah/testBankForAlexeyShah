@@ -6,22 +6,22 @@ import (
 )
 
 type BaseService struct {
-	ctx            context.Context
-	db             *storage.PostgreConnector
-	autoCloseStore bool
-	isRollback     *bool
+	Ctx            context.Context
+	DB             *storage.PostgreConnector
+	AutoCloseStore bool
+	IsRollback     *bool
 }
 
 func (s *BaseService) Close() {
-	s.db.Close(*s.isRollback)
+	s.DB.Close(*s.IsRollback)
 }
 
 func (s *BaseService) setRollBack(err *error) {
 	boolVal := false
 	if err != nil && *err != nil && len((*err).Error()) > 0 {
 		boolVal = true
-		s.isRollback = &boolVal
+		s.IsRollback = &boolVal
 	} else {
-		s.isRollback = &boolVal
+		s.IsRollback = &boolVal
 	}
 }
