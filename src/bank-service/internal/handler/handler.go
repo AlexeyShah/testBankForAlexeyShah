@@ -29,6 +29,7 @@ func RegisterRoutes(r *gin.Engine) {
 		wallets := v1.Group("/wallets")
 		{
 			wallets.GET("/:id", walletHandler.Get)
+			wallets.GET("", walletHandler.GetAll)
 		}
 	}
 }

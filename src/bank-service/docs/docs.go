@@ -50,6 +50,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/wallets": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "get all",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/bankService_internal_commands_commandResponse.WalletResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/bankService_internal_commands_commandResponse.ErrorReponse"
+                        }
+                    }
+                }
+            }
+        },
         "/wallets/{id}": {
             "get": {
                 "consumes": [
@@ -111,18 +139,7 @@ const docTemplate = `{
                 }
             }
         },
-        "bankService_internal_commands_commandResponse.WalletResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/bankService_internal_models.Wallet"
-                    }
-                }
-            }
-        },
-        "bankService_internal_models.Wallet": {
+        "bankService_internal_commands_commandResponse.WalletItem": {
             "type": "object",
             "properties": {
                 "ballance": {
@@ -130,6 +147,14 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                }
+            }
+        },
+        "bankService_internal_commands_commandResponse.WalletResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/bankService_internal_commands_commandResponse.WalletItem"
                 }
             }
         }

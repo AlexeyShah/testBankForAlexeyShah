@@ -11,6 +11,7 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lpernett/godotenv"
 	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -18,6 +19,22 @@ import (
 
 func init() {
 	logger.Logger.SetFormatter(&logrus.TextFormatter{})
+	err := godotenv.Load("config.env")
+	if err != nil {
+		logger.Logger.Fatalf("failed load env: %v", err)
+	}
+
+	logger.Logger.Infof("Environment = %s", os.Getenv(consts.EnvironmentName))
+	logger.Logger.Infof("connection = %s", os.Getenv(consts.CloudConnectionPostgre))
+	if len(os.Getenv(consts.EnvironmentName)) == 0 || os.Getenv(consts.EnvironmentName) == consts.EnvironmentLocal || os.Getenv(consts.EnvironmentName) == consts.EnvironmentDebug {
+		logger.Logger.Info("log level = debug")
+		logger.Logger.SetLevel(logrus.DebugLevel)
+	} else if os.Getenv(consts.EnvironmentName) == consts.EnvironmentTest || os.Getenv(consts.EnvironmentName) == consts.EnvironmentProduction {
+		logger.Logger.Info("log level = info")
+		logger.Logger.SetLevel(logrus.InfoLevel)
+	} else {
+		logger.Logger.Info("log level = default")
+	}
 }
 
 // @title Api Bank Service
@@ -29,10 +46,16 @@ func init() {
 func main() {
 	logger.Logger.Info("Start application")
 
-	err := storage.NewMigrator().Magrate()
+	conn, err := storage.NewPostgreConnection()
 	if err != nil {
 		panic(err)
 	}
+	err = storage.NewMigrator(conn).Magrate()
+	if err != nil {
+		panic(err)
+	}
+
+	logger.Logger.Info("migration success")
 
 	if os.Getenv(consts.EnvironmentName) == consts.EnvironmentProduction {
 		gin.SetMode(gin.ReleaseMode)

@@ -7,7 +7,7 @@ const (
 
 //Environment
 const (
-	EnvironmentName       = "Environment"
+	EnvironmentName       = "EnvironmentVal"
 	EnvironmentLocal      = "Local"
 	EnvironmentDebug      = "Debug"
 	EnvironmentTest       = "Test"

@@ -14,19 +14,17 @@ definitions:
       error:
         type: string
     type: object
-  bankService_internal_commands_commandResponse.WalletResponse:
-    properties:
-      result:
-        items:
-          $ref: '#/definitions/bankService_internal_models.Wallet'
-        type: array
-    type: object
-  bankService_internal_models.Wallet:
+  bankService_internal_commands_commandResponse.WalletItem:
     properties:
       ballance:
         type: integer
       id:
         type: string
+    type: object
+  bankService_internal_commands_commandResponse.WalletResponse:
+    properties:
+      result:
+        $ref: '#/definitions/bankService_internal_commands_commandResponse.WalletItem'
     type: object
 host: localhost:8080
 info:
@@ -55,6 +53,24 @@ paths:
           schema:
             $ref: '#/definitions/bankService_internal_commands_commandResponse.ErrorReponse'
       summary: create
+      tags:
+      - Wallet
+  /wallets:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/bankService_internal_commands_commandResponse.WalletResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/bankService_internal_commands_commandResponse.ErrorReponse'
+      summary: get all
       tags:
       - Wallet
   /wallets/{id}:

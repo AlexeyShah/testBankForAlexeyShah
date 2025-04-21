@@ -1,5 +1,9 @@
 package commandResponse
 
+type WalletAllResponse struct {
+	Result []WalletItem `json:"result,omitempty"`
+}
+
 type WalletResponse struct {
 	Result WalletItem `json:"result,omitempty"`
 }
